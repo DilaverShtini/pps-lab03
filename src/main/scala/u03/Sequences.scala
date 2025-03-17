@@ -59,7 +59,10 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10], [] => [10]
      * E.g., [], [] => []
      */
-    def concat[A](s1: Sequence[A], s2: Sequence[A]): Sequence[A] = ???
+    def concat[A](s1: Sequence[A], s2: Sequence[A]): Sequence[A] = (s1, s2) match
+      case (Cons(headS1, tailS1), s2) => Cons(headS1, concat(tailS1, s2))
+      case _ => s2
+
     /*
      * Reverse the sequence
      * E.g., [10, 20, 30] => [30, 20, 10]
