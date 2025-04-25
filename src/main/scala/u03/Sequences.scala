@@ -113,12 +113,15 @@ object Sequences: // Essentially, generic linkedlists
         case Cons(head, tail) => evenIndicesAccumulator(if tail.size % 2 == 0 then skip(tail)(1) else tail, Cons(head, accumulator))
         case _ => reverse(accumulator)
       evenIndicesAccumulator(s, Nil())
+
     /*
      * Check if the sequence contains the element
      * E.g., [10, 20, 30] => true if elem is 20
      * E.g., [10, 20, 30] => false if elem is 40
      */
-    def contains[A](s: Sequence[A])(elem: A): Boolean = ???
+    def contains[A](s: Sequence[A])(elem: A): Boolean = s match
+      case Cons(head, tail) => if head == elem then true else contains(tail)(elem)
+      case _ => false
 
     /*
      * Remove duplicates from the sequence
