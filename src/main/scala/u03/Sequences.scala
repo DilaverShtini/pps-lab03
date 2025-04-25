@@ -69,8 +69,12 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10] => [10]
      * E.g., [] => []
      */
-    def reverse[A](s: Sequence[A]): Sequence[A] = ???
-
+    def reverse[A](s: Sequence[A]): Sequence[A] =
+      @tailrec
+      def reverseAccumulator(seq: Sequence[A], accumulator: Sequence[A]): Sequence[A] = seq match
+        case Cons(head, tail) => reverseAccumulator(tail, Cons(head, accumulator))
+        case _ => accumulator
+      reverseAccumulator(s, Nil())
     /*
      * Map the elements of the sequence to a new sequence and flatten the result
      * E.g., [10, 20, 30], calling with mapper(v => [v, v + 1]) returns [10, 11, 20, 21, 30, 31]
@@ -78,7 +82,6 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30], calling with mapper(v => Nil()) returns []
      */
     def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = ???
-
     /*
      * Get the minimum element in the sequence
      * E.g., [30, 20, 10] => 10
