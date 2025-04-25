@@ -128,7 +128,13 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 10, 30] => [10, 20, 30]
      * E.g., [10, 20, 30] => [10, 20, 30]
      */
-    def distinct[A](s: Sequence[A]): Sequence[A] = ???
+    def distinct[A](s: Sequence[A]): Sequence[A] =
+      @tailrec
+      def distinctAccumulator(sequence: Sequence[A], accumulator: Sequence[A]): Sequence[A] = sequence match
+        case Cons(head, tail) if !contains(accumulator)(head) => distinctAccumulator(tail, Cons(head, accumulator))
+        case Cons(_, tail) => distinctAccumulator(tail, accumulator)
+        case _ => reverse(accumulator)
+      distinctAccumulator(s, Nil())
 
     /*
      * Group contiguous elements in the sequence
