@@ -107,8 +107,12 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30] => [10, 30]
      * E.g., [10, 20, 30, 40] => [10, 30]
      */
-    def evenIndices[A](s: Sequence[A]): Sequence[A] = ???
-
+    def evenIndices[A](s: Sequence[A]): Sequence[A] =
+      @tailrec
+      def evenIndicesAccumulator(seq: Sequence[A], accumulator: Sequence[A]): Sequence[A] = seq match
+        case Cons(head, tail) => evenIndicesAccumulator(if tail.size % 2 == 0 then skip(tail)(1) else tail, Cons(head, accumulator))
+        case _ => reverse(accumulator)
+      evenIndicesAccumulator(s, Nil())
     /*
      * Check if the sequence contains the element
      * E.g., [10, 20, 30] => true if elem is 20
