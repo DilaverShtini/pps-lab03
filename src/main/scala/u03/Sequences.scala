@@ -5,6 +5,7 @@ import u03.Optionals.Optional.*
 import u03.extensionmethods.ExtensionMethods.size
 
 import scala.annotation.tailrec
+import scala.jdk.Accumulator
 
 object Sequences: // Essentially, generic linkedlists
 
@@ -75,19 +76,31 @@ object Sequences: // Essentially, generic linkedlists
         case Cons(head, tail) => reverseAccumulator(tail, Cons(head, accumulator))
         case _ => accumulator
       reverseAccumulator(s, Nil())
+
     /*
      * Map the elements of the sequence to a new sequence and flatten the result
      * E.g., [10, 20, 30], calling with mapper(v => [v, v + 1]) returns [10, 11, 20, 21, 30, 31]
      * E.g., [10, 20, 30], calling with mapper(v => [v]) returns [10, 20, 30]
      * E.g., [10, 20, 30], calling with mapper(v => Nil()) returns []
      */
-    def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = ???
+    def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] =
+      @tailrec
+      def flatMapAccumulator(seq: Sequence[A], accumulator: Sequence[B]): Sequence[B] = seq match
+        case Cons(head, tail) => flatMapAccumulator(tail, concat(mapper(head), accumulator))
+        case _ => reverse(accumulator)
+      flatMapAccumulator(s, Nil())
+
     /*
      * Get the minimum element in the sequence
      * E.g., [30, 20, 10] => 10
      * E.g., [10, 1, 30] => 1
      */
-    def min(s: Sequence[Int]): Optional[Int] = ???
+    def min(s: Sequence[Int]): Optional[Int] =
+      @tailrec
+      def minAccumulator(seq: Sequence[Int], minValue: Int): Optional[Int] = seq match
+        case Cons(head, tail) => minAccumulator(tail, if head < minValue then head else minValue)
+        case _ => if minValue == Int.MaxValue then Empty() else Just(minValue)
+      minAccumulator(s, Int.MaxValue)
 
     /*
      * Get the elements at even indices
